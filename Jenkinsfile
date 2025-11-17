@@ -25,6 +25,12 @@ pipeline {
                 bat 'curl http://localhost:5000'
             }
         }
+    stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'app.py, Dockerfile, requirements.txt', fingerprint: true
+            }
+        }
+
     }
 
     post {
@@ -40,9 +46,4 @@ pipeline {
     }
 
 
-    stage('Archive Artifacts') {
-            steps {
-                archiveArtifacts artifacts: 'app.py, Dockerfile, requirements.txt', fingerprint: true
-            }
-        }
 }
