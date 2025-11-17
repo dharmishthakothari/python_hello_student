@@ -38,4 +38,11 @@ pipeline {
             echo "Build Failed!"
         }
     }
+
+
+    stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'app.py, Dockerfile, requirements.txt', fingerprint: true
+            }
+        }
 }
