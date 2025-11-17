@@ -27,7 +27,7 @@ pipeline {
         }
     stage('Archive Artifacts') {
             steps {
-                archiveArtifacts artifacts: 'app.py, Dockerfile, requirements.txt', fingerprint: true
+                archiveArtifacts artifacts: 'app.py, Dockerfile, requirements.txt', followSymlinks: false
             }
         }
 
