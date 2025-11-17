@@ -2,48 +2,52 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout Code') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Setup Python Environment') {
             steps {
-                bat 'docker build -t flask_student_app .'
+                bat """
+                echo Creating virtual environment...
+                python -m venv venv
+
+                echo Activating environment...
+                call venv\\Scripts\\activate
+
+                echo Installing dependencies...
+                pip install -r requirements.txt
+                """
             }
         }
 
-        stage('Run Container') {
+        stage('Run Flask App') {
             steps {
-                bat 'docker run -d --name flask_student_container -p 5000:5000 flask_student_app'
+                bat """
+                call venv\\Scripts\\activate
+                echo Running Flask app...
+                python app.py
+                """
             }
         }
 
-        stage('Test Application') {
+        stage('Archive Artifacts') {
             steps {
-                bat 'curl http://localhost:5000'
-            }
-        }
-    stage('Archive Artifacts') {
-            steps {
-                archiveArtifacts artifacts: 'app.py, Dockerfile, requirements.txt', followSymlinks: false
+                archiveArtifacts artifacts: 'app.py, requirements.txt', fingerprint: true
             }
         }
 
     }
 
     post {
-        always {
-            bat 'docker ps -a'
-        }
         success {
-            echo "Build Successful!"
+            echo "Jenkins build completed successfully!"
         }
         failure {
-            echo "Build Failed!"
+            echo "Build failed!"
         }
     }
-
-
 }
