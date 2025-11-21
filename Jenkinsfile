@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_BUILDKIT = "0"
+        DOCKER_API_VERSION = '1.41'
         IMAGE_NAME = "flask_student_app"
     }
 
